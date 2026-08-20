@@ -1,5 +1,5 @@
 import heroImg from "@/assets/hero.jpg";
-import portraitImg from "@/assets/nikhil-portrait.jpg";
+import portraitImg from "@/assets/nikhil-portrait-v2.jpg";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
