@@ -17,7 +17,7 @@ export function Footer() {
         <div className="flex items-center gap-3">
           <img
             src={data.brand.logo}
-            alt={`${data.brand.company} logo`}
+            alt={data.brand.company}
             className="size-12 shrink-0 rounded-xl bg-white object-contain p-1"
           />
           <div>
