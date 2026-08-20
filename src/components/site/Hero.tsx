@@ -23,8 +23,11 @@ export function Hero() {
             {data.brand.role}
           </span>
           <h1 className="mt-6 text-4xl font-extrabold leading-[1.08] sm:text-5xl lg:text-6xl">
-            {data.hero.headline}
+            Corporate Leadership &amp; Soft Skills Training by {data.brand.person}
           </h1>
+          <p className="mt-4 max-w-xl text-lg font-semibold text-gold">
+            {data.hero.headline}
+          </p>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-primary-foreground/75 sm:text-lg">
             {data.hero.subtext}
           </p>

@@ -25,7 +25,7 @@ export function Header() {
         <Link to="/" className="flex min-w-0 items-center gap-2 sm:gap-3">
           <img
             src={data.brand.logo}
-            alt={`${data.brand.company} logo`}
+            alt={data.brand.company}
             className="h-10 w-10 shrink-0 rounded-xl bg-white object-contain p-1 sm:h-11 sm:w-11"
           />
           <span className="min-w-0 leading-tight">
