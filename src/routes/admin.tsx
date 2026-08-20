@@ -8,7 +8,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSite } from "@/lib/site-store";
-import type { ClientItem, Course, CourseStatus, GalleryCategory, GalleryItem, SiteData } from "@/data/siteContent";
+import type {
+  ClientItem,
+  Course,
+  CourseStatus,
+  GalleryCategory,
+  GalleryItem,
+  SiteData,
+  Testimonial,
+} from "@/data/siteContent";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -115,6 +123,23 @@ function AdminPage() {
     patch({ gallery: current.gallery.map((g) => (g.id === id ? { ...g, ...next } : g)) });
   const updateClient = (id: string, next: Partial<ClientItem>) =>
     patch({ clients: current.clients.map((c) => (c.id === id ? { ...c, ...next } : c)) });
+  const testimonials = current.testimonials ?? [];
+  const updateTestimonial = (id: string, next: Partial<Testimonial>) =>
+    patch({ testimonials: testimonials.map((t) => (t.id === id ? { ...t, ...next } : t)) });
+
+  const uploadTestimonialPhoto = async (id: string, file?: File | null) => {
+    if (!file) return;
+    if (file.size > 1024 * 1024) {
+      toast.error("Please use a photo under 1 MB.");
+      return;
+    }
+    try {
+      updateTestimonial(id, { photo: await readFileAsDataUrl(file) });
+      toast.success("Photo uploaded");
+    } catch {
+      toast.error("Could not read that image");
+    }
+  };
 
   const uploadClientLogo = async (id: string, file?: File | null) => {
     if (!file) return;
@@ -162,6 +187,7 @@ function AdminPage() {
             <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="gallery">Gallery</TabsTrigger>
             <TabsTrigger value="clients">Clients &amp; Logos</TabsTrigger>
+            <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
             <TabsTrigger value="export">Export &amp; Sync</TabsTrigger>
           </TabsList>
 
@@ -320,6 +346,77 @@ function AdminPage() {
                   <Button variant="destructive" size="sm" className="w-full" onClick={() => patch({ clients: current.clients.filter((x) => x.id !== c.id) })}>
                     <Trash2 className="size-4" /> Remove
                   </Button>
+                </div>
+              </div>
+            ))}
+          </TabsContent>
+
+          <TabsContent value="testimonials" className="mt-6 space-y-4">
+            <Button
+              variant="navy"
+              onClick={() =>
+                patch({
+                  testimonials: [
+                    ...testimonials,
+                    { id: `t${Date.now()}`, quote: "", name: "", role: "", company: "", photo: "" },
+                  ],
+                })
+              }
+            >
+              <Plus className="size-4" /> Add testimonial
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              Add client or participant feedback. A photo is optional — initials show when none is uploaded.
+            </p>
+            {testimonials.map((t) => (
+              <div key={t.id} className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-card">
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <Field label="Name" value={t.name} onChange={(v) => updateTestimonial(t.id, { name: v })} />
+                  <Field label="Role / Designation" value={t.role} onChange={(v) => updateTestimonial(t.id, { role: v })} />
+                  <Field label="Company" value={t.company} onChange={(v) => updateTestimonial(t.id, { company: v })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Testimonial</Label>
+                  <Textarea
+                    rows={3}
+                    value={t.quote}
+                    onChange={(e) => updateTestimonial(t.id, { quote: e.target.value })}
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-[80px_1fr_auto] sm:items-end">
+                  <div className="flex h-20 items-center justify-center rounded-lg border border-border bg-background p-2">
+                    {t.photo ? (
+                      <img src={t.photo} alt={t.name} className="size-16 rounded-full object-cover" />
+                    ) : (
+                      <span className="text-[10px] text-muted-foreground">No photo</span>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Upload photo</Label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => void uploadTestimonialPhoto(t.id, e.target.files?.[0])}
+                    />
+                    <Input
+                      placeholder="…or paste an image URL"
+                      value={t.photo.startsWith("data:") ? "" : t.photo}
+                      onChange={(e) => updateTestimonial(t.id, { photo: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Button variant="outline" size="sm" className="w-full" onClick={() => updateTestimonial(t.id, { photo: "" })}>
+                      Clear photo
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => patch({ testimonials: testimonials.filter((x) => x.id !== t.id) })}
+                    >
+                      <Trash2 className="size-4" /> Remove
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}

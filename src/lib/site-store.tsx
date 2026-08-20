@@ -32,6 +32,7 @@ function merge(base: SiteData, patch: Partial<SiteData>): SiteData {
     ...(clients ? { clients } : {}),
     brand: { ...base.brand, ...(patch.brand ?? {}) },
     contact: { ...base.contact, ...(patch.contact ?? {}) },
+    testimonials: patch.testimonials ?? base.testimonials,
     hero,
     about: { ...base.about, ...(patch.about ?? {}) },
   };
