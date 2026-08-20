@@ -352,6 +352,7 @@ function AdminPage() {
           </TabsContent>
 
           <TabsContent value="export" className="mt-6 space-y-4">
+            {null}
             <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
               <h2 className="font-bold">Export &amp; sync</h2>
               <p className="mt-2 text-sm text-muted-foreground">
