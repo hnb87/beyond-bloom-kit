@@ -180,3 +180,12 @@
 @utility shadow-card {
   box-shadow: var(--shadow-card);
 }
+
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@utility animate-marquee {
+  animation: marquee-x 30s linear infinite;
+}

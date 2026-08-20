@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { defaultSiteData, type SiteData } from "@/data/siteContent";
+import type { ClientItem } from "@/data/siteContent";
 
 const STORAGE_KEY = "bbks-site-data-v1";
 
@@ -18,9 +19,17 @@ function merge(base: SiteData, patch: Partial<SiteData>): SiteData {
   const hero = { ...base.hero, ...(patch.hero ?? {}) };
   if (isBundled(patch.hero?.portraitImage)) hero.portraitImage = base.hero.portraitImage;
   if (isBundled(patch.hero?.backgroundImage)) hero.backgroundImage = base.hero.backgroundImage;
+  // Older saved data stored clients as plain strings.
+  const rawClients = patch.clients as unknown;
+  const clients: ClientItem[] | undefined = Array.isArray(rawClients)
+    ? (rawClients as unknown[]).map((c, i) =>
+        typeof c === "string" ? { id: `cl${i + 1}`, name: c, logo: "" } : (c as ClientItem),
+      )
+    : undefined;
   return {
     ...base,
     ...patch,
+    ...(clients ? { clients } : {}),
     brand: { ...base.brand, ...(patch.brand ?? {}) },
     contact: { ...base.contact, ...(patch.contact ?? {}) },
     hero,

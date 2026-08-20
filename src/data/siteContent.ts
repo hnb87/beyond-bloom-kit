@@ -3,6 +3,7 @@ import portraitImg from "@/assets/nikhil-portrait-v2.jpg";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
+import logoAsset from "@/assets/logo.jpg.asset.json";
 
 export type CourseStatus = "Running" | "Upcoming" | "On Demand";
 export type GalleryCategory = "Corporate" | "Campus / University" | "Leadership Workshops";
@@ -23,6 +24,13 @@ export interface GalleryItem {
   category: GalleryCategory;
 }
 
+export interface ClientItem {
+  id: string;
+  name: string;
+  /** Logo image URL or uploaded data URL. Empty = show the name as text. */
+  logo: string;
+}
+
 export interface SiteData {
   adminPin: string;
   brand: {
@@ -31,6 +39,7 @@ export interface SiteData {
     role: string;
     tagline: string;
     valueProposition: string;
+    logo: string;
   };
   contact: {
     whatsapp: string;
@@ -56,9 +65,11 @@ export interface SiteData {
   methodology: { step: string; title: string; description: string }[];
   courses: Course[];
   gallery: GalleryItem[];
-  clients: string[];
+  clients: ClientItem[];
   featuredQuote: string;
 }
+
+export const brandLogo = logoAsset.url;
 
 export const defaultSiteData: SiteData = {
   adminPin: "2468",
@@ -69,6 +80,7 @@ export const defaultSiteData: SiteData = {
     tagline: "Empowering People. Strengthening Teams. Driving Business Excellence.",
     valueProposition:
       "People Development with Business Purpose. Helping leaders, professionals, and teams translate learning into workplace impact.",
+    logo: logoAsset.url,
   },
   contact: {
     whatsapp: "919845025061",
@@ -151,6 +163,6 @@ export const defaultSiteData: SiteData = {
     "Teravon Solar Energies",
     "Labh Property",
     "ICFAI University",
-  ],
+  ].map((name, i) => ({ id: `cl${i + 1}`, name, logo: "" })),
   featuredQuote: "Organizations grow when their people grow.",
 };

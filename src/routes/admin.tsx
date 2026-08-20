@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSite } from "@/lib/site-store";
-import type { Course, CourseStatus, GalleryCategory, GalleryItem, SiteData } from "@/data/siteContent";
+import type { ClientItem, Course, CourseStatus, GalleryCategory, GalleryItem, SiteData } from "@/data/siteContent";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -25,6 +25,14 @@ export const Route = createFileRoute("/admin")({
 
 const statuses: CourseStatus[] = ["Running", "Upcoming", "On Demand"];
 const categories: GalleryCategory[] = ["Corporate", "Campus / University", "Leadership Workshops"];
+
+const readFileAsDataUrl = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error("Could not read file"));
+    reader.readAsDataURL(file);
+  });
 
 function AdminPage() {
   const { data, setData, reset } = useSite();
@@ -105,6 +113,22 @@ function AdminPage() {
     patch({ courses: current.courses.map((c) => (c.id === id ? { ...c, ...next } : c)) });
   const updateGallery = (id: string, next: Partial<GalleryItem>) =>
     patch({ gallery: current.gallery.map((g) => (g.id === id ? { ...g, ...next } : g)) });
+  const updateClient = (id: string, next: Partial<ClientItem>) =>
+    patch({ clients: current.clients.map((c) => (c.id === id ? { ...c, ...next } : c)) });
+
+  const uploadClientLogo = async (id: string, file?: File | null) => {
+    if (!file) return;
+    if (file.size > 1024 * 1024) {
+      toast.error("Please use a logo under 1 MB.");
+      return;
+    }
+    try {
+      updateClient(id, { logo: await readFileAsDataUrl(file) });
+      toast.success("Logo uploaded");
+    } catch {
+      toast.error("Could not read that image");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-secondary/50">
@@ -137,6 +161,7 @@ function AdminPage() {
             <TabsTrigger value="general">General &amp; Contact</TabsTrigger>
             <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="gallery">Gallery</TabsTrigger>
+            <TabsTrigger value="clients">Clients &amp; Logos</TabsTrigger>
             <TabsTrigger value="export">Export &amp; Sync</TabsTrigger>
           </TabsList>
 
@@ -163,6 +188,7 @@ function AdminPage() {
               <Field label="Background image path / URL" value={current.hero.backgroundImage} onChange={(v) => patch({ hero: { ...current.hero, backgroundImage: v } })} />
               <Field label="Portrait image path / URL" value={current.hero.portraitImage} onChange={(v) => patch({ hero: { ...current.hero, portraitImage: v } })} />
               <Field label="Admin PIN" value={current.adminPin} onChange={(v) => patch({ adminPin: v })} />
+              <Field label="Brand logo path / URL" value={current.brand.logo} onChange={(v) => patch({ brand: { ...current.brand, logo: v } })} />
             </Card>
           </TabsContent>
 
@@ -244,6 +270,54 @@ function AdminPage() {
                     ))}
                   </select>
                   <Button variant="destructive" size="sm" className="w-full" onClick={() => patch({ gallery: current.gallery.filter((x) => x.id !== g.id) })}>
+                    <Trash2 className="size-4" /> Remove
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </TabsContent>
+
+          <TabsContent value="clients" className="mt-6 space-y-4">
+            <Button
+              variant="navy"
+              onClick={() =>
+                patch({ clients: [...current.clients, { id: `cl${Date.now()}`, name: "New Client", logo: "" }] })
+              }
+            >
+              <Plus className="size-4" /> Add client
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              Upload a logo (PNG/JPG/SVG under 1 MB) for each client. Clients without a logo show their name as text in
+              the scrolling strip.
+            </p>
+            {current.clients.map((c) => (
+              <div key={c.id} className="grid gap-4 rounded-2xl border border-border bg-card p-5 shadow-card sm:grid-cols-[120px_1fr_1fr_auto] sm:items-end">
+                <div className="flex h-20 items-center justify-center rounded-lg border border-border bg-background p-2">
+                  {c.logo ? (
+                    <img src={c.logo} alt={c.name} className="max-h-16 max-w-full object-contain" />
+                  ) : (
+                    <span className="text-[10px] text-muted-foreground">No logo</span>
+                  )}
+                </div>
+                <Field label="Client name" value={c.name} onChange={(v) => updateClient(c.id, { name: v })} />
+                <div className="space-y-2">
+                  <Label>Upload logo</Label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => void uploadClientLogo(c.id, e.target.files?.[0])}
+                  />
+                  <Input
+                    placeholder="…or paste an image URL"
+                    value={c.logo.startsWith("data:") ? "" : c.logo}
+                    onChange={(e) => updateClient(c.id, { logo: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Button variant="outline" size="sm" className="w-full" onClick={() => updateClient(c.id, { logo: "" })}>
+                    Clear logo
+                  </Button>
+                  <Button variant="destructive" size="sm" className="w-full" onClick={() => patch({ clients: current.clients.filter((x) => x.id !== c.id) })}>
                     <Trash2 className="size-4" /> Remove
                   </Button>
                 </div>
