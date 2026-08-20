@@ -23,9 +23,11 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link to="/" className="flex min-w-0 items-center gap-2 sm:gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl surface-navy text-xs font-extrabold sm:h-11 sm:w-11 sm:text-sm">
-            B&amp;B
-          </span>
+          <img
+            src={data.brand.logo}
+            alt={`${data.brand.company} logo`}
+            className="h-10 w-10 shrink-0 rounded-xl bg-white object-contain p-1 sm:h-11 sm:w-11"
+          />
           <span className="min-w-0 leading-tight">
             <span className="block truncate text-[13px] font-bold sm:text-base">{data.brand.company}</span>
             <span className="block truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-gold-deep sm:text-[11px]">
