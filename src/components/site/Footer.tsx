@@ -40,11 +40,23 @@ export function Footer() {
           ))}
         </div>
       </div>
-      <div className="border-t border-primary-foreground/10 py-4 text-center text-xs text-primary-foreground/60">
-        © {new Date().getFullYear()} {data.brand.company}. All rights reserved. ·{" "}
-        <Link to="/admin" className="hover:text-gold">
-          Admin
-        </Link>
+      <div className="border-t border-primary-foreground/10 py-4">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 sm:px-6 md:flex-row">
+          <p className="text-center text-xs text-primary-foreground/60 md:text-left">
+            © {new Date().getFullYear()} {data.brand.company}. All rights reserved.
+          </p>
+          <p className="text-center text-xs text-primary-foreground/60 md:text-right">
+            Developed By:{" "}
+            <a
+              href="https://thelinkai.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gold underline underline-offset-2"
+            >
+              TheLinkAI
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   );
