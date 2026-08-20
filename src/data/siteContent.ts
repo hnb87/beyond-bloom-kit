@@ -31,6 +31,16 @@ export interface ClientItem {
   logo: string;
 }
 
+export interface Testimonial {
+  id: string;
+  quote: string;
+  name: string;
+  role: string;
+  company: string;
+  /** Optional avatar image URL or uploaded data URL. */
+  photo: string;
+}
+
 export interface SiteData {
   adminPin: string;
   brand: {
@@ -67,6 +77,7 @@ export interface SiteData {
   gallery: GalleryItem[];
   clients: ClientItem[];
   featuredQuote: string;
+  testimonials: Testimonial[];
 }
 
 export const brandLogo = logoAsset.url;
@@ -165,4 +176,33 @@ export const defaultSiteData: SiteData = {
     "ICFAI University",
   ].map((name, i) => ({ id: `cl${i + 1}`, name, logo: "" })),
   featuredQuote: "Organizations grow when their people grow.",
+  testimonials: [
+    {
+      id: "t1",
+      quote:
+        "The leadership program changed how our managers hold conversations. Feedback that used to be avoided now happens weekly — and the team can feel the difference.",
+      name: "Rajesh Iyer",
+      role: "Head of HR",
+      company: "Geetanjali Engineers",
+      photo: "",
+    },
+    {
+      id: "t2",
+      quote:
+        "Nikhil's session was the most engaging our students have attended. Not a single phone came out in four hours — and the follow-up assignments were taken seriously.",
+      name: "Dr. Meera Shah",
+      role: "Training & Placement Officer",
+      company: "Parul University",
+      photo: "",
+    },
+    {
+      id: "t3",
+      quote:
+        "Our sales conversion improved noticeably within a quarter. The questioning framework alone was worth the investment.",
+      name: "Amit Kulkarni",
+      role: "Regional Sales Head",
+      company: "Sai Investments",
+      photo: "",
+    },
+  ],
 };
