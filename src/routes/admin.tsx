@@ -277,11 +277,55 @@ function AdminPage() {
             ))}
           </TabsContent>
 
-          <TabsContent value="export" className="mt-6 space-y-4">
-            <div />
+          <TabsContent value="clients" className="mt-6 space-y-4">
+            <Button
+              variant="navy"
+              onClick={() =>
+                patch({ clients: [...current.clients, { id: `cl${Date.now()}`, name: "New Client", logo: "" }] })
+              }
+            >
+              <Plus className="size-4" /> Add client
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              Upload a logo (PNG/JPG/SVG under 1 MB) for each client. Clients without a logo show their name as text in
+              the scrolling strip.
+            </p>
+            {current.clients.map((c) => (
+              <div key={c.id} className="grid gap-4 rounded-2xl border border-border bg-card p-5 shadow-card sm:grid-cols-[120px_1fr_1fr_auto] sm:items-end">
+                <div className="flex h-20 items-center justify-center rounded-lg border border-border bg-background p-2">
+                  {c.logo ? (
+                    <img src={c.logo} alt={c.name} className="max-h-16 max-w-full object-contain" />
+                  ) : (
+                    <span className="text-[10px] text-muted-foreground">No logo</span>
+                  )}
+                </div>
+                <Field label="Client name" value={c.name} onChange={(v) => updateClient(c.id, { name: v })} />
+                <div className="space-y-2">
+                  <Label>Upload logo</Label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => void uploadClientLogo(c.id, e.target.files?.[0])}
+                  />
+                  <Input
+                    placeholder="…or paste an image URL"
+                    value={c.logo.startsWith("data:") ? "" : c.logo}
+                    onChange={(e) => updateClient(c.id, { logo: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Button variant="outline" size="sm" className="w-full" onClick={() => updateClient(c.id, { logo: "" })}>
+                    Clear logo
+                  </Button>
+                  <Button variant="destructive" size="sm" className="w-full" onClick={() => patch({ clients: current.clients.filter((x) => x.id !== c.id) })}>
+                    <Trash2 className="size-4" /> Remove
+                  </Button>
+                </div>
+              </div>
+            ))}
           </TabsContent>
 
-          <TabsContent value="__unused" className="mt-6 space-y-4">
+          <TabsContent value="export" className="mt-6 space-y-4">
             <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
               <h2 className="font-bold">Export &amp; sync</h2>
               <p className="mt-2 text-sm text-muted-foreground">
