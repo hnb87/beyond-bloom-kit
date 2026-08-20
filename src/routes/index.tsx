@@ -6,6 +6,7 @@ import { Methodology } from "@/components/site/Methodology";
 import { Programs } from "@/components/site/Programs";
 import { Gallery } from "@/components/site/Gallery";
 import { Clients } from "@/components/site/Clients";
+import { FAQ } from "@/components/site/FAQ";
 import { Contact } from "@/components/site/Contact";
 import { Footer } from "@/components/site/Footer";
 
