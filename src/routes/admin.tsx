@@ -8,7 +8,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSite } from "@/lib/site-store";
-import type { ClientItem, Course, CourseStatus, GalleryCategory, GalleryItem, SiteData } from "@/data/siteContent";
+import type {
+  ClientItem,
+  Course,
+  CourseStatus,
+  GalleryCategory,
+  GalleryItem,
+  SiteData,
+  Testimonial,
+} from "@/data/siteContent";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -115,6 +123,23 @@ function AdminPage() {
     patch({ gallery: current.gallery.map((g) => (g.id === id ? { ...g, ...next } : g)) });
   const updateClient = (id: string, next: Partial<ClientItem>) =>
     patch({ clients: current.clients.map((c) => (c.id === id ? { ...c, ...next } : c)) });
+  const testimonials = current.testimonials ?? [];
+  const updateTestimonial = (id: string, next: Partial<Testimonial>) =>
+    patch({ testimonials: testimonials.map((t) => (t.id === id ? { ...t, ...next } : t)) });
+
+  const uploadTestimonialPhoto = async (id: string, file?: File | null) => {
+    if (!file) return;
+    if (file.size > 1024 * 1024) {
+      toast.error("Please use a photo under 1 MB.");
+      return;
+    }
+    try {
+      updateTestimonial(id, { photo: await readFileAsDataUrl(file) });
+      toast.success("Photo uploaded");
+    } catch {
+      toast.error("Could not read that image");
+    }
+  };
 
   const uploadClientLogo = async (id: string, file?: File | null) => {
     if (!file) return;
@@ -162,6 +187,7 @@ function AdminPage() {
             <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="gallery">Gallery</TabsTrigger>
             <TabsTrigger value="clients">Clients &amp; Logos</TabsTrigger>
+            <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
             <TabsTrigger value="export">Export &amp; Sync</TabsTrigger>
           </TabsList>
 
