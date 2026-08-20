@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSite } from "@/lib/site-store";
-import type { Course, CourseStatus, GalleryCategory, GalleryItem, SiteData } from "@/data/siteContent";
+import type { ClientItem, Course, CourseStatus, GalleryCategory, GalleryItem, SiteData } from "@/data/siteContent";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -25,6 +25,14 @@ export const Route = createFileRoute("/admin")({
 
 const statuses: CourseStatus[] = ["Running", "Upcoming", "On Demand"];
 const categories: GalleryCategory[] = ["Corporate", "Campus / University", "Leadership Workshops"];
+
+const readFileAsDataUrl = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error("Could not read file"));
+    reader.readAsDataURL(file);
+  });
 
 function AdminPage() {
   const { data, setData, reset } = useSite();
@@ -105,6 +113,22 @@ function AdminPage() {
     patch({ courses: current.courses.map((c) => (c.id === id ? { ...c, ...next } : c)) });
   const updateGallery = (id: string, next: Partial<GalleryItem>) =>
     patch({ gallery: current.gallery.map((g) => (g.id === id ? { ...g, ...next } : g)) });
+  const updateClient = (id: string, next: Partial<ClientItem>) =>
+    patch({ clients: current.clients.map((c) => (c.id === id ? { ...c, ...next } : c)) });
+
+  const uploadClientLogo = async (id: string, file?: File | null) => {
+    if (!file) return;
+    if (file.size > 1024 * 1024) {
+      toast.error("Please use a logo under 1 MB.");
+      return;
+    }
+    try {
+      updateClient(id, { logo: await readFileAsDataUrl(file) });
+      toast.success("Logo uploaded");
+    } catch {
+      toast.error("Could not read that image");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-secondary/50">
@@ -137,6 +161,7 @@ function AdminPage() {
             <TabsTrigger value="general">General &amp; Contact</TabsTrigger>
             <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="gallery">Gallery</TabsTrigger>
+            <TabsTrigger value="clients">Clients &amp; Logos</TabsTrigger>
             <TabsTrigger value="export">Export &amp; Sync</TabsTrigger>
           </TabsList>
 
