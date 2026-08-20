@@ -17,7 +17,7 @@ export function Clients() {
               className="flex h-24 w-44 shrink-0 items-center justify-center rounded-xl border border-border bg-card px-4 py-3 text-center text-xs font-semibold text-muted-foreground shadow-card transition-colors hover:border-gold/60 hover:text-foreground"
             >
               {c.logo ? (
-                <img src={c.logo} alt={`${c.name} logo`} loading="lazy" className="max-h-16 max-w-full object-contain" />
+                <img src={c.logo} alt={c.name} loading="lazy" className="max-h-16 max-w-full object-contain" />
               ) : (
                 c.name
               )}
