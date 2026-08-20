@@ -13,12 +13,17 @@ interface SiteContextValue {
 const SiteContext = createContext<SiteContextValue | null>(null);
 
 function merge(base: SiteData, patch: Partial<SiteData>): SiteData {
+  // Bundled asset URLs change on every build — never let a stale cached copy win.
+  const isBundled = (v?: string) => !!v && /\/(src\/)?assets\//.test(v);
+  const hero = { ...base.hero, ...(patch.hero ?? {}) };
+  if (isBundled(patch.hero?.portraitImage)) hero.portraitImage = base.hero.portraitImage;
+  if (isBundled(patch.hero?.backgroundImage)) hero.backgroundImage = base.hero.backgroundImage;
   return {
     ...base,
     ...patch,
     brand: { ...base.brand, ...(patch.brand ?? {}) },
     contact: { ...base.contact, ...(patch.contact ?? {}) },
-    hero: { ...base.hero, ...(patch.hero ?? {}) },
+    hero,
     about: { ...base.about, ...(patch.about ?? {}) },
   };
 }
