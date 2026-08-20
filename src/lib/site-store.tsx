@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { defaultSiteData, type SiteData } from "@/data/siteContent";
+import { brandLogo, defaultSiteData, type SiteData } from "@/data/siteContent";
 import type { ClientItem } from "@/data/siteContent";
 
 const STORAGE_KEY = "bbks-site-data-v1";
@@ -15,7 +15,7 @@ const SiteContext = createContext<SiteContextValue | null>(null);
 
 function merge(base: SiteData, patch: Partial<SiteData>): SiteData {
   // Bundled asset URLs change on every build — never let a stale cached copy win.
-  const isBundled = (v?: string) => !!v && /\/(src\/)?assets\//.test(v);
+  const isBundled = (v?: string) => !!v && /\/(src\/)?assets\/|__l5e/.test(v);
   const hero = { ...base.hero, ...(patch.hero ?? {}) };
   if (isBundled(patch.hero?.portraitImage)) hero.portraitImage = base.hero.portraitImage;
   if (isBundled(patch.hero?.backgroundImage)) hero.backgroundImage = base.hero.backgroundImage;
@@ -26,11 +26,14 @@ function merge(base: SiteData, patch: Partial<SiteData>): SiteData {
         typeof c === "string" ? { id: `cl${i + 1}`, name: c, logo: "" } : (c as ClientItem),
       )
     : undefined;
+  const brand = { ...base.brand, ...(patch.brand ?? {}) };
+  // Old saved data may point at a CDN URL that 404s on self-hosting.
+  if (isBundled(patch.brand?.logo)) brand.logo = brandLogo;
   return {
     ...base,
     ...patch,
     ...(clients ? { clients } : {}),
-    brand: { ...base.brand, ...(patch.brand ?? {}) },
+    brand,
     contact: { ...base.contact, ...(patch.contact ?? {}) },
     testimonials: patch.testimonials ?? base.testimonials,
     hero,

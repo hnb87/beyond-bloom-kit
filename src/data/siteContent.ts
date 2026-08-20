@@ -3,8 +3,6 @@ import portraitImg from "@/assets/nikhil-portrait-v2.jpg";
 import g1 from "@/assets/gallery-1.jpg";
 import g2 from "@/assets/gallery-2.jpg";
 import g3 from "@/assets/gallery-3.jpg";
-import logoAsset from "@/assets/logo.jpg.asset.json";
-
 export type CourseStatus = "Running" | "Upcoming" | "On Demand";
 export type GalleryCategory = "Corporate" | "Campus / University" | "Leadership Workshops";
 
@@ -80,7 +78,8 @@ export interface SiteData {
   testimonials: Testimonial[];
 }
 
-export const brandLogo = logoAsset.url;
+/** Served from public/logo.jpg so it works on any host (Hostinger included). */
+export const brandLogo = "/logo.jpg";
 
 export const defaultSiteData: SiteData = {
   adminPin: "2468",
@@ -91,7 +90,7 @@ export const defaultSiteData: SiteData = {
     tagline: "Empowering People. Strengthening Teams. Driving Business Excellence.",
     valueProposition:
       "People Development with Business Purpose. Helping leaders, professionals, and teams translate learning into workplace impact.",
-    logo: logoAsset.url,
+    logo: brandLogo,
   },
   contact: {
     whatsapp: "919845025061",
