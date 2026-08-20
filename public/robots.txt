@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://beyond-bloom-kit.lovable.app/sitemap.xml

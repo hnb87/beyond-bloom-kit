@@ -65,7 +65,11 @@ export function Gallery() {
           <button className="absolute right-5 top-5 rounded-full bg-background/10 p-2 text-primary-foreground" aria-label="Close">
             <X className="size-6" />
           </button>
-          <img src={lightbox} alt="Workshop photo" className="max-h-[85vh] max-w-full rounded-xl object-contain" />
+          <img
+            src={lightbox}
+            alt="Enlarged view of a Best and Beyond leadership training session"
+            className="max-h-[85vh] max-w-full rounded-xl object-contain"
+          />
         </div>
       )}
     </section>
