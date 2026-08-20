@@ -25,7 +25,7 @@ export function About() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           {data.about.pillars.map((pillar, i) => {
-            const Icon = pillarIcons[i % pillarIcons.length];
+            const Icon = pillarIcons[i % pillarIcons.length] ?? Sparkles;
             return (
               <div
                 key={pillar.title}
