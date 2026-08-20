@@ -188,6 +188,7 @@ function AdminPage() {
               <Field label="Background image path / URL" value={current.hero.backgroundImage} onChange={(v) => patch({ hero: { ...current.hero, backgroundImage: v } })} />
               <Field label="Portrait image path / URL" value={current.hero.portraitImage} onChange={(v) => patch({ hero: { ...current.hero, portraitImage: v } })} />
               <Field label="Admin PIN" value={current.adminPin} onChange={(v) => patch({ adminPin: v })} />
+              <Field label="Brand logo path / URL" value={current.brand.logo} onChange={(v) => patch({ brand: { ...current.brand, logo: v } })} />
             </Card>
           </TabsContent>
 
@@ -277,6 +278,10 @@ function AdminPage() {
           </TabsContent>
 
           <TabsContent value="export" className="mt-6 space-y-4">
+            <div />
+          </TabsContent>
+
+          <TabsContent value="__unused" className="mt-6 space-y-4">
             <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
               <h2 className="font-bold">Export &amp; sync</h2>
               <p className="mt-2 text-sm text-muted-foreground">
