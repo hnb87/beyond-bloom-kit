@@ -6,6 +6,7 @@ import { Methodology } from "@/components/site/Methodology";
 import { Programs } from "@/components/site/Programs";
 import { Gallery } from "@/components/site/Gallery";
 import { Clients } from "@/components/site/Clients";
+import { Testimonials } from "@/components/site/Testimonials";
 import { FAQ } from "@/components/site/FAQ";
 import { Contact } from "@/components/site/Contact";
 import { Footer } from "@/components/site/Footer";
@@ -160,6 +161,7 @@ function Index() {
         <Programs />
         <Gallery />
         <Clients />
+        <Testimonials />
         <FAQ items={faqs} />
         <Contact />
       </main>
